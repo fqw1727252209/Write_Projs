@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.study.platform.mapper.StudyNoteMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.study.platform.entity.StudyNote">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="course_id" property="courseId"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="category" property="category"/>
+        <result column="is_favorite" property="isFavorite"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!-- 根据用户ID查询笔记列表 -->
+    <select id="selectByUserId" resultMap="BaseResultMap">
+        SELECT * FROM study_note WHERE user_id = #{userId} ORDER BY create_time DESC
+    </select>
+
+    <!-- 根据用户ID和分类查询笔记列表 -->
+    <select id="selectByUserIdAndCategory" resultMap="BaseResultMap">
+        SELECT * FROM study_note WHERE user_id = #{userId} AND category = #{category} ORDER BY create_time DESC
+    </select>
+
+    <!-- 根据课程ID查询笔记列表 -->
+    <select id="selectByCourseId" resultMap="BaseResultMap">
+        SELECT * FROM study_note WHERE course_id = #{courseId} ORDER BY create_time DESC
+    </select>
+
+    <!-- 根据ID查询笔记 -->
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT * FROM study_note WHERE id = #{id}
+    </select>
+
+    <!-- 搜索笔记 -->
+    <select id="searchByKeyword" resultMap="BaseResultMap">
+        SELECT * FROM study_note 
+        WHERE user_id = #{userId} 
+        AND (title LIKE CONCAT('%', #{keyword}, '%') OR content LIKE CONCAT('%', #{keyword}, '%'))
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 插入笔记 -->
+    <insert id="insert" parameterType="com.study.platform.entity.StudyNote" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO study_note (user_id, course_id, title, content, category, is_favorite)
+        VALUES (#{userId}, #{courseId}, #{title}, #{content}, #{category}, #{isFavorite})
+    </insert>
+
+    <!-- 更新笔记 -->
+    <update id="update" parameterType="com.study.platform.entity.StudyNote">
+        UPDATE study_note
+        <set>
+            <if test="courseId != null">course_id = #{courseId},</if>
+            <if test="title != null">title = #{title},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="category != null">category = #{category},</if>
+            <if test="isFavorite != null">is_favorite = #{isFavorite},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除笔记 -->
+    <delete id="deleteById">
+        DELETE FROM study_note WHERE id = #{id}
+    </delete>
+
+</mapper>
+

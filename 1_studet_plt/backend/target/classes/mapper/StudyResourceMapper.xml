@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.study.platform.mapper.StudyResourceMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.study.platform.entity.StudyResource">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="course_id" property="courseId"/>
+        <result column="resource_name" property="resourceName"/>
+        <result column="file_name" property="fileName"/>
+        <result column="file_path" property="filePath"/>
+        <result column="file_type" property="fileType"/>
+        <result column="file_size" property="fileSize"/>
+        <result column="resource_type" property="resourceType"/>
+        <result column="download_count" property="downloadCount"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!-- 根据用户ID查询资源列表 -->
+    <select id="selectByUserId" resultMap="BaseResultMap">
+        SELECT * FROM study_resource WHERE user_id = #{userId} ORDER BY create_time DESC
+    </select>
+
+    <!-- 根据用户ID和资源类型查询资源列表 -->
+    <select id="selectByUserIdAndType" resultMap="BaseResultMap">
+        SELECT * FROM study_resource WHERE user_id = #{userId} AND resource_type = #{resourceType} ORDER BY create_time DESC
+    </select>
+
+    <!-- 根据课程ID查询资源列表 -->
+    <select id="selectByCourseId" resultMap="BaseResultMap">
+        SELECT * FROM study_resource WHERE course_id = #{courseId} ORDER BY create_time DESC
+    </select>
+
+    <!-- 根据ID查询资源 -->
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT * FROM study_resource WHERE id = #{id}
+    </select>
+
+    <!-- 插入资源 -->
+    <insert id="insert" parameterType="com.study.platform.entity.StudyResource" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO study_resource (user_id, course_id, resource_name, file_name, file_path, file_type, file_size, resource_type, download_count)
+        VALUES (#{userId}, #{courseId}, #{resourceName}, #{fileName}, #{filePath}, #{fileType}, #{fileSize}, #{resourceType}, #{downloadCount})
+    </insert>
+
+    <!-- 更新资源 -->
+    <update id="update" parameterType="com.study.platform.entity.StudyResource">
+        UPDATE study_resource
+        <set>
+            <if test="courseId != null">course_id = #{courseId},</if>
+            <if test="resourceName != null">resource_name = #{resourceName},</if>
+            <if test="fileName != null">file_name = #{fileName},</if>
+            <if test="filePath != null">file_path = #{filePath},</if>
+            <if test="fileType != null">file_type = #{fileType},</if>
+            <if test="fileSize != null">file_size = #{fileSize},</if>
+            <if test="resourceType != null">resource_type = #{resourceType},</if>
+            <if test="downloadCount != null">download_count = #{downloadCount},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除资源 -->
+    <delete id="deleteById">
+        DELETE FROM study_resource WHERE id = #{id}
+    </delete>
+
+    <!-- 增加下载次数 -->
+    <update id="incrementDownloadCount">
+        UPDATE study_resource SET download_count = download_count + 1 WHERE id = #{id}
+    </update>
+
+</mapper>
+

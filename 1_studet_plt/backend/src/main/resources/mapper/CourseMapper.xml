@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.study.platform.mapper.CourseMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.study.platform.entity.Course">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="course_name" property="courseName"/>
+        <result column="teacher" property="teacher"/>
+        <result column="week_day" property="weekDay"/>
+        <result column="start_section" property="startSection"/>
+        <result column="end_section" property="endSection"/>
+        <result column="location" property="location"/>
+        <result column="credit" property="credit"/>
+        <result column="semester" property="semester"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!-- 根据用户ID查询课程列表 -->
+    <select id="selectByUserId" resultMap="BaseResultMap">
+        SELECT * FROM course WHERE user_id = #{userId} ORDER BY week_day ASC, start_section ASC
+    </select>
+
+    <!-- 根据用户ID和学期查询课程列表 -->
+    <select id="selectByUserIdAndSemester" resultMap="BaseResultMap">
+        SELECT * FROM course WHERE user_id = #{userId} AND semester = #{semester} ORDER BY week_day ASC, start_section ASC
+    </select>
+
+    <!-- 根据ID查询课程 -->
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT * FROM course WHERE id = #{id}
+    </select>
+
+    <!-- 插入课程 -->
+    <insert id="insert" parameterType="com.study.platform.entity.Course" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO course (user_id, course_name, teacher, week_day, start_section, end_section, location, credit, semester)
+        VALUES (#{userId}, #{courseName}, #{teacher}, #{weekDay}, #{startSection}, #{endSection}, #{location}, #{credit}, #{semester})
+    </insert>
+
+    <!-- 更新课程 -->
+    <update id="update" parameterType="com.study.platform.entity.Course">
+        UPDATE course
+        <set>
+            <if test="courseName != null">course_name = #{courseName},</if>
+            <if test="teacher != null">teacher = #{teacher},</if>
+            <if test="weekDay != null">week_day = #{weekDay},</if>
+            <if test="startSection != null">start_section = #{startSection},</if>
+            <if test="endSection != null">end_section = #{endSection},</if>
+            <if test="location != null">location = #{location},</if>
+            <if test="credit != null">credit = #{credit},</if>
+            <if test="semester != null">semester = #{semester},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除课程 -->
+    <delete id="deleteById">
+        DELETE FROM course WHERE id = #{id}
+    </delete>
+
+    <!-- 统计用户的课程数量 -->
+    <select id="countByUserId" resultType="int">
+        SELECT COUNT(*) FROM course WHERE user_id = #{userId}
+    </select>
+
+</mapper>
+

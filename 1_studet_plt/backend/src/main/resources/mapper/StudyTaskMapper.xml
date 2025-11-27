@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.study.platform.mapper.StudyTaskMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.study.platform.entity.StudyTask">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="plan_id" property="planId"/>
+        <result column="task_name" property="taskName"/>
+        <result column="priority" property="priority"/>
+        <result column="deadline" property="deadline"/>
+        <result column="content" property="content"/>
+        <result column="status" property="status"/>
+        <result column="complete_time" property="completeTime"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!-- 根据用户ID查询任务列表 -->
+    <select id="selectByUserId" resultMap="BaseResultMap">
+        SELECT * FROM study_task WHERE user_id = #{userId} ORDER BY priority ASC, deadline ASC
+    </select>
+
+    <!-- 根据计划ID查询任务列表 -->
+    <select id="selectByPlanId" resultMap="BaseResultMap">
+        SELECT * FROM study_task WHERE plan_id = #{planId} ORDER BY priority ASC, deadline ASC
+    </select>
+
+    <!-- 根据用户ID和状态查询任务列表 -->
+    <select id="selectByUserIdAndStatus" resultMap="BaseResultMap">
+        SELECT * FROM study_task WHERE user_id = #{userId} AND status = #{status} ORDER BY priority ASC, deadline ASC
+    </select>
+
+    <!-- 根据ID查询任务 -->
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT * FROM study_task WHERE id = #{id}
+    </select>
+
+    <!-- 插入任务 -->
+    <insert id="insert" parameterType="com.study.platform.entity.StudyTask" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO study_task (user_id, plan_id, task_name, priority, deadline, content, status)
+        VALUES (#{userId}, #{planId}, #{taskName}, #{priority}, #{deadline}, #{content}, #{status})
+    </insert>
+
+    <!-- 更新任务 -->
+    <update id="update" parameterType="com.study.platform.entity.StudyTask">
+        UPDATE study_task
+        <set>
+            <if test="planId != null">plan_id = #{planId},</if>
+            <if test="taskName != null">task_name = #{taskName},</if>
+            <if test="priority != null">priority = #{priority},</if>
+            <if test="deadline != null">deadline = #{deadline},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="completeTime != null">complete_time = #{completeTime},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除任务 -->
+    <delete id="deleteById">
+        DELETE FROM study_task WHERE id = #{id}
+    </delete>
+
+    <!-- 统计用户的任务数量 -->
+    <select id="countByUserId" resultType="int">
+        SELECT COUNT(*) FROM study_task WHERE user_id = #{userId}
+    </select>
+
+    <!-- 统计用户已完成的任务数量 -->
+    <select id="countCompletedByUserId" resultType="int">
+        SELECT COUNT(*) FROM study_task WHERE user_id = #{userId} AND status = 2
+    </select>
+
+</mapper>
+

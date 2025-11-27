@@ -1,0 +1,32 @@
+spring:
+  profiles:
+    active: dev
+  
+  application:
+    name: student-study-platform
+  
+  # 文件上传配置
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+# MyBatis配置
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.study.platform.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# 服务器配置
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+# 文件上传路径配置
+file:
+  upload-path: D:/upload/
+
